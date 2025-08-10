@@ -90,9 +90,7 @@ jobs:
           ```powershell
           zipwithpwd <対象ファイルまたはディレクトリ>
           ```
-          
-          ### 変更内容
-          - このリリースの変更内容をここに記載してください
+
         files: |
           zipwithpwd-windows-amd64.zip
           zipwithpwd-installer.exe
