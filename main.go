@@ -61,7 +61,7 @@ func main() {
 // zenityのEntryダイアログでパスワードを編集・取得する
 func getPasswordFromInputBox(suggested string) (string, error) {
 	pw, err := zenity.Entry(
-		"推奨パスワードを編集できます。",
+		"パスワードを編集できます。",
 		zenity.Title("パスワード入力"),
 		zenity.EntryText(suggested),
 	)
