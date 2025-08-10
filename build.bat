@@ -1,44 +1,45 @@
 @echo off
 echo ====================================
-echo zipwithpwd ãƒ“ãƒ«ãƒ‰ï¼†ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ãƒ³ã‚°
+echo zipwithpwd ƒrƒ‹ƒh•ƒpƒbƒP[ƒWƒ“ƒO
 echo ====================================
 
-REM 1. buildãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆï¼ˆå­˜åœ¨ã—ãªã„å ´åˆï¼‰
+REM 1. buildƒfƒBƒŒƒNƒgƒŠ‚ÆdistƒfƒBƒŒƒNƒgƒŠ‚ðì¬i‘¶Ý‚µ‚È‚¢ê‡j
 if not exist "build" mkdir build
+if not exist "dist" mkdir dist
 
-REM 2. Goã§ãƒ“ãƒ«ãƒ‰ï¼ˆå‡ºåŠ›å…ˆã‚’buildãƒ•ã‚©ãƒ«ãƒ€ã«æŒ‡å®šï¼‰
-echo [1/3] Goãƒ“ãƒ«ãƒ‰ä¸­...
+REM 2. Go‚Åƒrƒ‹ƒhio—Íæ‚ðbuildƒtƒHƒ‹ƒ_‚ÉŽw’èj
+echo [1/3] Goƒrƒ‹ƒh’†...
 go build -o build\zipwithpwd.exe
 if errorlevel 1 (
-    echo ã‚¨ãƒ©ãƒ¼: Goãƒ“ãƒ«ãƒ‰ã«å¤±æ•—ã—ã¾ã—ãŸ
+    echo ƒGƒ‰[: Goƒrƒ‹ƒh‚ÉŽ¸”s‚µ‚Ü‚µ‚½
     pause
     exit /b 1
 )
-echo Goãƒ“ãƒ«ãƒ‰å®Œäº†: build\zipwithpwd.exe
+echo Goƒrƒ‹ƒhŠ®—¹: build\zipwithpwd.exe
 
-REM 3. è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚‚buildãƒ•ã‚©ãƒ«ãƒ€ã«ã‚³ãƒ”ãƒ¼ï¼ˆå­˜åœ¨ã™ã‚‹å ´åˆï¼‰
+REM 3. Ý’èƒtƒ@ƒCƒ‹‚àbuildƒtƒHƒ‹ƒ_‚ÉƒRƒs[i‘¶Ý‚·‚éê‡j
 if exist "zipwithpwd.json" (
-    echo [2/3] è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚³ãƒ”ãƒ¼ä¸­...
+    echo [2/3] Ý’èƒtƒ@ƒCƒ‹‚ðƒRƒs[’†...
     copy zipwithpwd.json build\zipwithpwd.json >nul
-    echo è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼å®Œäº†
+    echo Ý’èƒtƒ@ƒCƒ‹ƒRƒs[Š®—¹
 ) else (
-    echo [2/3] è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ï¼ˆã‚¹ã‚­ãƒƒãƒ—ï¼‰
+    echo [2/3] Ý’èƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñiƒXƒLƒbƒvj
 )
 
-REM 4. NSISã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼ä½œæˆ
-echo [3/3] ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼ä½œæˆä¸­...
+REM 4. NSISƒCƒ“ƒXƒg[ƒ‰[ì¬
+echo [3/3] ƒCƒ“ƒXƒg[ƒ‰[ì¬’†...
 makensis installer.nsi
 if errorlevel 1 (
-    echo ã‚¨ãƒ©ãƒ¼: ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ
-    echo NSISãŒã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèªã—ã¦ãã ã•ã„
+    echo ƒGƒ‰[: ƒCƒ“ƒXƒg[ƒ‰[ì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½
+    echo NSIS‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢
     pause
     exit /b 1
 )
-echo ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼ä½œæˆå®Œäº†: zipwithpwd_installer.exe
+echo ƒCƒ“ƒXƒg[ƒ‰[ì¬Š®—¹: zipwithpwd_installer.exe
 
 echo ====================================
-echo å®Œäº†ã—ã¾ã—ãŸï¼
-echo - å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«: build\zipwithpwd.exe
-echo - ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ©ãƒ¼: zipwithpwd_installer.exe
+echo Š®—¹‚µ‚Ü‚µ‚½I
+echo - ŽÀsƒtƒ@ƒCƒ‹: build\zipwithpwd.exe
+echo - ƒCƒ“ƒXƒg[ƒ‰[: dist\zipwithpwd_installer.exe
 echo ====================================
 pause

@@ -1,1 +1,3 @@
-zipwithpwd.exe
+*.exe
+build/
+dist/
