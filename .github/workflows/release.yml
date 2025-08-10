@@ -21,18 +21,34 @@ jobs:
       with:
         go-version: '1.24'
 
+    - name: Install NSIS
+      run: |
+        choco install nsis -y
+        # NSISのパスを環境変数に追加
+        echo "C:\Program Files (x86)\NSIS" >> $env:GITHUB_PATH
+
     - name: Get dependencies
       run: go mod download
 
-    - name: Build Windows executable
+    - name: Run build batch file
       run: |
-        go build -ldflags "-s -w" -o zipwithpwd.exe
-        
-    - name: Create build directory and copy files
+        if (Test-Path "build.bat") {
+          cmd /c build.bat
+        } else {
+          Write-Error "build.bat not found in repository root"
+          exit 1
+        }
+
+    - name: Verify build output
       run: |
-        New-Item -ItemType Directory -Force -Path build
-        Copy-Item zipwithpwd.exe build/
-        Copy-Item zipwithpwd.json build/
+        if (-not (Test-Path "build/zipwithpwd.exe")) {
+          Write-Error "zipwithpwd.exe not found in build directory"
+          exit 1
+        }
+        if (-not (Test-Path "zipwithpwd-installer.exe")) {
+          Write-Error "zipwithpwd-installer.exe not found"
+          exit 1
+        }
 
     - name: Create release archive
       run: |
@@ -55,10 +71,13 @@ jobs:
           
           パスワード付きZIPファイルを簡単に作成するWindowsアプリケーション
           
-          ### 変更内容
-          - このリリースの変更内容をここに記載してください
-          
           ### インストール方法
+          
+          #### インストーラーを使用する場合（推奨）
+          1. `zipwithpwd-installer.exe` をダウンロード
+          2. インストーラーを実行してセットアップ
+          
+          #### ポータブル版を使用する場合
           1. `zipwithpwd-windows-amd64.zip` をダウンロード
           2. 任意のフォルダに展開
           3. `zipwithpwd.exe` を使用開始
@@ -71,9 +90,13 @@ jobs:
           ```powershell
           zipwithpwd <対象ファイルまたはディレクトリ>
           ```
+          
+          ### 変更内容
+          - このリリースの変更内容をここに記載してください
         files: |
           zipwithpwd-windows-amd64.zip
-        draft: false
+          zipwithpwd-installer.exe
+        draft: true
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
