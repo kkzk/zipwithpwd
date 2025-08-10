@@ -93,7 +93,7 @@ jobs:
 
         files: |
           zipwithpwd-windows-amd64.zip
-          zipwithpwd-installer.exe
+          dist/zipwithpwd-installer.exe
         draft: true
         prerelease: false
       env:
