@@ -45,7 +45,7 @@ jobs:
           Write-Error "zipwithpwd.exe not found in build directory"
           exit 1
         }
-        if (-not (Test-Path "zipwithpwd-installer.exe")) {
+        if (-not (Test-Path "dist/zipwithpwd-installer.exe")) {
           Write-Error "zipwithpwd-installer.exe not found"
           exit 1
         }
