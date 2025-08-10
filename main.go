@@ -22,33 +22,38 @@ func main() {
 	flag.Parse()
 
 	if flag.NArg() != 1 {
-		flag.Usage()
+		// コマンドライン引数が不正な場合はダイアログでエラー表示
+		zenity.Error("使用法: zipwithpwd <対象ファイルまたはディレクトリ>")
 		os.Exit(1)
 	}
 	target := flag.Arg(0)
-	fmt.Printf("[info] target: %s\n", target)
+	// fmt.Printf("[info] target: %s\n", target) // コンソール出力を無効化
 
 	zipName := filepath.Base(target) + ".zip"
 
 	password, err := suggestPassword(target)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[error] パスワードサジェスト失敗: %v\n", err)
+		// エラーダイアログで表示
+		zenity.Error("パスワードサジェスト失敗: " + err.Error())
 		os.Exit(2)
 	}
 
 	// パスワード編集ダイアログを表示
 	password, err = getPasswordFromInputBox(password)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[error] パスワード入力ダイアログ失敗: %v\n", err)
+		// エラーダイアログで表示
+		zenity.Error("パスワード入力ダイアログ失敗: " + err.Error())
 		os.Exit(2)
 	}
 
 	err = createPasswordZip(zipName, target, password)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "[error] zip作成失敗: %v\n", err)
+		// エラーダイアログで表示
+		zenity.Error("zip作成失敗: " + err.Error())
 		os.Exit(2)
 	}
-	fmt.Printf("[info] zip作成成功: %s\n", zipName)
+	// 成功メッセージをダイアログで表示
+	zenity.Info("zip作成成功: " + zipName)
 }
 
 // パスワードテンプレート構造体
@@ -183,7 +188,8 @@ func createPasswordZip(zipPath, targetPath, password string) error {
 	} else {
 		cmd = exec.Command(sevenZip, "a", "-tzip", "-p"+password, "-mem=ZipCrypto", zipPath, targetPath)
 	}
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	// コンソール出力を無効化
+	// cmd.Stdout = os.Stdout
+	// cmd.Stderr = os.Stderr
 	return cmd.Run()
 }

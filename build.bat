@@ -9,7 +9,7 @@ if not exist "dist" mkdir dist
 
 REM 2. Goでビルド（出力先をbuildフォルダに指定）
 echo [1/3] Goビルド中...
-go build -o build\zipwithpwd.exe
+go build -ldflags="-H windowsgui" -o build\zipwithpwd.exe
 if errorlevel 1 (
     echo エラー: Goビルドに失敗しました
     pause
@@ -42,4 +42,4 @@ echo 完了しました！
 echo - 実行ファイル: build\zipwithpwd.exe
 echo - インストーラー: dist\zipwithpwd_installer.exe
 echo ====================================
-pause
+
