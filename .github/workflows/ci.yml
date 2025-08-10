@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Get dependencies
+      run: go mod download
+
+    - name: Verify dependencies
+      run: go mod verify
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Run go vet
+      run: go vet ./...
+
+    - name: Install staticcheck
+      run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+    - name: Run staticcheck
+      run: staticcheck ./...
+
+    - name: Run tests (if any exist)
+      run: |
+        $testFiles = Get-ChildItem -Recurse -Name "*_test.go"
+        if ($testFiles.Count -gt 0) {
+          go test -race -vet=off ./...
+        } else {
+          Write-Host "No test files found, skipping tests"
+        }
+
+    - name: Test build executable
+      run: |
+        go build -o zipwithpwd-test.exe
+        if (Test-Path "zipwithpwd-test.exe") {
+          Write-Host "✓ Executable built successfully"
+          Remove-Item "zipwithpwd-test.exe"
+        } else {
+          Write-Host "✗ Failed to build executable"
+          exit 1
+        }

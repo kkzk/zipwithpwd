@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # v1.0.0, v1.1.0 などのタグがpushされた時にトリガー
+
+permissions:
+  contents: write  # リリース作成に必要
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Get dependencies
+      run: go mod download
+
+    - name: Build Windows executable
+      run: |
+        go build -ldflags "-s -w" -o zipwithpwd.exe
+        
+    - name: Create build directory and copy files
+      run: |
+        New-Item -ItemType Directory -Force -Path build
+        Copy-Item zipwithpwd.exe build/
+        Copy-Item zipwithpwd.json build/
+
+    - name: Create release archive
+      run: |
+        Compress-Archive -Path build/* -DestinationPath zipwithpwd-windows-amd64.zip
+
+    - name: Extract version from tag
+      id: get_version
+      run: |
+        $version = "${{ github.ref_name }}" -replace '^v', ''
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Tag: ${{ github.ref_name }}, Version: $version"
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: "zipwithpwd ${{ steps.get_version.outputs.VERSION }}"
+        body: |
+          ## zipwithpwd ${{ steps.get_version.outputs.VERSION }}
+          
+          パスワード付きZIPファイルを簡単に作成するWindowsアプリケーション
+          
+          ### 変更内容
+          - このリリースの変更内容をここに記載してください
+          
+          ### インストール方法
+          1. `zipwithpwd-windows-amd64.zip` をダウンロード
+          2. 任意のフォルダに展開
+          3. `zipwithpwd.exe` を使用開始
+          
+          ### 必要な環境
+          - Windows OS
+          - [7-Zip](https://www.7-zip.org/) がインストールされていること
+          
+          ### 使用方法
+          ```powershell
+          zipwithpwd <対象ファイルまたはディレクトリ>
+          ```
+        files: |
+          zipwithpwd-windows-amd64.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
