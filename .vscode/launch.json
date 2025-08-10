@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "type": "go",
+      "request": "launch",
+      "name": "Launch Program",
+      "mode": "debug",
+      "program": "${workspaceFolder}/main.go",
+      "args": ["${input:targetPath}"]
+    }
+  ],
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "targetPath",
+      "description": "Enter the target file or directory to zip"
+    }
+  ]
+}

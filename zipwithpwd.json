@@ -1,0 +1,13 @@
+{
+  "default": "zipwithpwd{{date}}",
+  "patterns": [
+    {
+      "pattern": ".*\\.xlsx$",
+      "template": "zipwithpwd-{{basename}}-{{date}}"
+    },
+    {
+      "pattern": ".*\\.docx$",
+      "template": "zipwithpwd-{{basename}}-{{date}}"
+    }
+  ]
+}
